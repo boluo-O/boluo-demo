@@ -1,4 +1,3 @@
-// 需要先有node环境
 const exec = require('child_process').execFile
 
 // 注意path参数中路径分隔符 \ 转义 \\
