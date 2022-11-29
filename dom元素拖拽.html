@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>拖拽测试</title>
+		<style>
+			body {
+				padding: 20px;
+			}
+
+			.box {
+				position: relative;
+				background-color: wheat;
+				height: 400px;
+			}
+
+			.dragTarget {
+				position: absolute;
+				background-color: rgb(0, 162, 255);
+				width: 50px;
+				height: 20px;
+				outline: none;
+			}
+
+			.dragTarget:hover {
+				cursor: grab;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<div class="dragTarget" draggable="true" aria-grabbed="true"></div>
+		</div>
+		<script>
+			const bindDragEvent = () => {
+				let startX
+				let startY
+				let offsetLeft
+				let offsetTop
+				const dragTarget = document.querySelector('.dragTarget')
+				dragTarget.addEventListener('dragstart', (e) => {
+					const target = e.target
+					startX = e.clientX
+					startY = e.clientY
+					offsetLeft = target.offsetLeft
+					offsetTop = target.offsetTop
+				})
+
+				dragTarget.addEventListener('drag', (e) => {
+					const target = e.target
+					target.style.cursor = 'grab'
+				})
+
+				dragTarget.addEventListener('dragend', (e) => {
+					const target = e.target
+					const left = e.clientX - startX + offsetLeft
+					const top = e.clientY - startY + offsetTop
+					target.style.left = left + 'px'
+					target.style.top = top + 'px'
+				})
+
+				const dragBox = document.querySelector('.box')
+				dragBox.addEventListener('dragover', (e) => {
+					e.preventDefault()
+					e.dataTransfer.dropEffect = 'move'
+				})
+			}
+
+			const __main = () => {
+				bindDragEvent()
+			}
+
+			__main()
+		</script>
+	</body>
+</html>
