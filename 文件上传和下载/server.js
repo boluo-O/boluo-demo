@@ -7,9 +7,9 @@ http.createServer((req, res) => {
 	res.setHeader('Access-Control-Allow-Origin', '*')
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 	res.setHeader('Content-Type', 'application/json')
-
+	console.log('req.url', req.url)
 	//  保存和重命名文件
-	if (req.method === 'POST') {
+	if (req.method === 'POST' && req.url === '/upload') {
 		const form = new formidable.IncomingForm()
 		form.uploadDir = './myDir'
 		form.keepExtensions = true
@@ -37,6 +37,11 @@ http.createServer((req, res) => {
 		})
 
 		form.parse(req)
+	} else if (req.method === 'GET' && req.url === '/getFile') {
+		fs.readFile('./myDir/test.txt', 'utf-8', (err, data) => {
+			res.statusCode = 200
+			res.end(data)
+		})
 	} else if (req.method === 'OPTIONS') {
 		res.setHeader('Access-Control-Allow-Origin', '*')
 		res.statusCode = 200

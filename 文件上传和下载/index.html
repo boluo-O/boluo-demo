@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<style>
+		body {
+			height: 200px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			padding-top: 50px;
+			padding-left: 100px;
+			align-items: flex-start;
+		}
+	</style>
+	<body>
+		<div>
+			点击这里上传
+			<input id="id-input-upload" type="file" />
+		</div>
+		<div>
+			<button id="id-button-download">点击我下载</button>
+		</div>
+		<script>
+			const uploadFile = (file, action) => {
+				const xhr = new XMLHttpRequest()
+				const formData = new FormData()
+				formData.append('file', file)
+				formData.append('fileName', file.name)
+
+				xhr.open('POST', action, true)
+				xhr.onload = () => {
+					if (xhr.status < 200 || xhr.status >= 300) {
+						console.log('error uploadFile', xhr.status)
+						return
+					}
+					file.status = 'done'
+				}
+				xhr.send(formData)
+			}
+
+			const bindUpload = () => {
+				const input = document.querySelector('#id-input-upload')
+
+				input.addEventListener('change', (e) => {
+					const target = e.target
+					const file = target.files[0]
+					uploadFile(file, 'http://127.0.0.1:8844/upload')
+				})
+			}
+
+			const downloadFile = (url) => {
+				const xhr = new XMLHttpRequest()
+
+				xhr.open('GET', url)
+				xhr.responseType = 'blob'
+				xhr.onload = () => {
+					if (xhr.status < 200 || xhr.status >= 300) {
+						console.log('error downloadFile', xhr.status)
+						return
+					}
+					const resBlob = xhr.response
+					const blobUrl = window.URL.createObjectURL(resBlob)
+					const a = document.createElement('a')
+					a.href = blobUrl
+					a.download = 'test.txt'
+					a.click()
+					window.URL.revokeObjectURL(blobUrl) //	主动释放url内存
+				}
+				xhr.send('')
+			}
+
+			const bindDownload = () => {
+				const e = document.querySelector('#id-button-download')
+
+				e.addEventListener('click', () => {
+					downloadFile('http://127.0.0.1:8844/getFile')
+				})
+			}
+
+			const __main = () => {
+				bindUpload()
+				bindDownload()
+			}
+
+			__main()
+		</script>
+	</body>
+</html>
