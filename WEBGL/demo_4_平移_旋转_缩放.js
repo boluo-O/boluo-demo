@@ -103,6 +103,8 @@ const drawTriangle_rotate = (gl) => {
 	gl.drawArrays(gl.TRIANGLES, 0, vertexNum)
 }
 
+// demo-3 缩放
+
 const __main = () => {
 	/**
 	 * @global
